@@ -1,0 +1,144 @@
+body {
+    background-color: teal;
+    background-image: url("img/clouds.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #3a4144;
+    font-family: Inter,sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 0px;
+}
+.header {
+    width: 1024px;
+    margin: auto;
+    background: #07f9f84a;
+    margin-bottom: 5;
+}
+.footer{
+    width: 1024px;
+/*    height: 40;*/
+    margin: auto;
+    background: #3e89b7c7;
+    margin-top: 5;
+    display: flex;
+    justify-content:flex-end;
+}
+.footer-telega{
+/*
+    display: inline-block;
+    vertical-align: middle;
+*/
+    width: 32px;
+    height: 32px;
+    margin: 8 20;
+    background-image: url("img/telegram.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    cursor: pointer;
+}
+.header-title{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 18px;
+    color: #ffffff;
+    padding: 10 0 10 20;
+}
+.header-logo{
+    display: inline-block;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+    margin: 8 0 8 13;
+    background-image: url("img/icon-windmill.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.page {
+    width: 1024px;
+    margin: auto;
+    background: white;
+    border: 1px solid #000000;
+}
+.page_top{
+    display: flex;
+    justify-content: space-between;
+    padding: 10;
+}
+.page_top-params{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.page_top-btn_upd{
+    height: 20;
+}
+.page_top-btn_upd button{
+    float: right;
+}
+.param_name{
+  text-align: left;
+}
+.param_value{
+    text-align: right;
+    width: 100;
+}
+.page_top-canva{
+    width: 340;
+    height: 294;
+/*    background: #ececec;*/
+}
+.page_top-diagram{
+    display: flex;
+    flex-direction: column;
+}
+.page_top-img{
+    height: 235;
+    width: 340;
+    margin: 10 10 10 0;
+    background-image: url("img/wing.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.page_top-diagram span{
+    margin-bottom: 5;
+}
+input {
+   width: 50px;
+}
+.small_font{
+   font-size: 14px; 
+}
+.micro_font{
+    font-size: 12px;
+    font-weight: 400;
+}
+#table {
+	width: 100%;
+/*	margin-bottom: 20px;*/
+	border: 15px solid #F2F8F8;
+	border-top: 5px solid #F2F8F8;
+	border-collapse: collapse; 
+}
+#table th {
+	font-weight: bold;
+	padding: 5px;
+	background: #F2F8F8;
+	border: none;
+	border-bottom: 5px solid #F2F8F8;
+}
+#table td {
+	padding: 5px;
+	border: none;
+	border-bottom: 5px solid #F2F8F8;
+} 
+#input_a {
+   width: 50px;
+} 
+#tr_v {
+   width: 100px;
+}
+td {
+  text-align: center;
+  vertical-align: middle;
+}

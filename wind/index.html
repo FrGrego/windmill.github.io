@@ -1,0 +1,236 @@
+<meta charset="utf-8" />
+<head>
+    <script src="vue.js"></script>
+    <title>Расчёт лопастей ветрогенератора онлайн</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta name="keywords" content="Ародинамический рассчет ветряка Фатеев ветородвигатели ветроустановки параметры лопастей ветроколеса калькулятор онлайн"/>
+</head>
+<link rel="stylesheet" href="styles.css">
+<body>
+<script src="airfoils.js"></script>
+<script src="script.js"></script>
+<div class="header">
+    <div class="header-logo"></div>
+    <span class="header-title">Аэродинамический расчёт лопастей ветрогенератора</span>
+</div>
+<div class="page" id="page">
+    <div class="page_top">
+        <div class="page_top-params">
+            <table>
+                <tr>
+                    <td class="param_name">Скорость ветра (м/с)</td>
+                    <td class="param_value"><input v-model.number="V" type="number" @change="calcW" min="0"></td>
+                </tr>
+                <tr>
+                    <td class="param_name">Диаметр ветроколеса (м)</td>
+                    <td class="param_value"><input v-model.number="D" type="number" @change="calcZ" min="0.1" step="1"></td>
+                </tr>
+                <tr>
+                    <td class="param_name">Количество лопастей</td>
+                    <td class="param_value"><input v-model.number="i_lop" type="number" @change="calcI"  min="1"></td>
+                </tr>
+                <tr>
+                    <td class="param_name">Быстроходность</td>
+                    <td class="param_value"><input v-model.number="Z" type="number" @change="calcZ"  min="1"></td>
+                </tr>
+                <tr>
+                    <td class="param_name">Профиль</td>
+                    <td class="param_value"><select v-model="airfoil_sel" @change="calcAirfoil">
+                        <option v-for="option in airfoil_opt" v-bind:value="option.value">
+                            {{ option.name }}
+                        </option>
+                    </select></td>
+                </tr>
+            </table>
+            <table class="small_font">
+                <tr>
+                    <td class="param_name">Температура воздуха</td>
+                    <td class="param_value"><select v-model="temper" @change="calcRe">
+                        <option>-10 °C</option>
+                        <option>0 °C</option>
+                        <option>10 °C</option>
+                        <option>20 °C</option>
+                    </select></td>
+                </tr>
+            </table>
+            <table class="small_font">
+                <tr>
+                    <td class="param_name">Мощность</td>
+                    <td class="param_value">{{ N }} Вт</td>
+                </tr>
+                <tr>
+                    <td class="param_name">Обороты</td>
+                    <td class="param_value">{{ n }} об./мин.</td>
+                </tr>
+                <tr>
+                    <td class="param_name">КПД</td>
+                    <td class="param_value">{{ eta }}</td>
+                </tr>
+                <tr>
+                    <td class="param_name">КИЭВ идеальный</td>
+                    <td class="param_value">{{ xii }}</td>
+                </tr>
+                <tr>
+                    <td class="param_name">КИЭВ</td>
+                    <td class="param_value">{{ xi }}</td>
+                </tr>
+                <tr>
+                    <td class="param_name">Коэффициент торможения</td>
+                    <td class="param_value">{{ e }}</td>
+                </tr>
+            </table>
+            <div class="page_top-btn_upd">
+                <button v-show="mu_mid != mu_mid_cur" v-on:click="update_mu">Пересчитать</button>
+            </div>
+        </div>
+        <div class="page_top-canva">
+            <canvas height="294" width="340" ref="canvas">Обновите браузер</canvas>
+        </div>    
+        <div class="page_top-diagram small_font">
+            <div class="page_top-img"></div>
+            <span>V - направление ветра</span>
+            <span>W - направление потока набегающего на лопасть</span>
+        </div>
+    </div>
+    <div>
+<!--
+        <p> <span>&mu; средн. задано: {{ mu_mid }} </span>
+            <button v-on:click="update_mu">&#8592;</button>
+            <span>&mu; средн.: {{ mu_mid_cur }} </span></p>
+-->
+        <table border="1" align="center" id="table">
+           <tr>
+            <th width=40>Сечение r</th>
+            <th width=40>Радиус (см)</th>
+            <th title="Быстроходность">z</th>
+            <th title="Второе уравнение связи">zu</th>
+            <th title="Угол между набегающим потоком воздуха и крылом">&alpha; &#176;</th>
+            <th title="Подъемная сила">Cy</th>
+            <th title="Отношение сопротивления лопасти к подьемной силе Cx/Cy">&mu;</th>
+            <th title="Первое уравнение связи">ibCy</th>
+            <th title="Хорда" width=60>Ширина лопасти b мм</th>
+            <th width=50>Угол потока &beta; &#176;</th>
+            <th width=60>Угол лопасти &phi; &#176;</th>
+            <th width=70>Скорость потока &#160;м/с</th>
+            <th title="Число Рейнольдса">Re</th>
+            <th width=60>Поляра 
+                <a class="micro_font" :href="airfoil_link" target="_blank">{{ airfoil_opt[airfoil_sel].name }}</a>
+            </th>
+           </tr>
+           <tr>
+               <td style="color: Indigo;">{{ r_R[0] }}</td>
+               <td>{{ or[0] }}</td>
+               <td>{{ zR[0] }}</td>
+               <td>{{ zuR[0] }}</td>
+               <td><input v-model.number="aR[0]" type="number" @change="calc(0)" id="input_a"></td>
+               <td>{{ cyR[0].toFixed(4) }}</td>
+               <td>{{ muR[0].toFixed(4) }}</td>
+               <td>{{ ibCyR[0].toFixed(4) }}</td>
+               <td>{{ bR[0] }}</td>
+               <td>{{ bettaR[0] }}</td>
+               <td>{{ phiR[0] }}</td>
+               <td>{{ WR[0] }}</td>
+               <td>{{ ReR[0] }} ≈</td>
+               <td>
+                   <select v-model.number="polaraR[0]" @change="calcPol(0)">
+                    <option selected>100000</option>
+                    <option>200000</option>
+                   </select>
+               </td>
+            </tr>
+            <tr>
+               <td style="color: DarkOrange;">{{ r_R[1] }}</td>
+               <td>{{ or[1] }}</td>
+               <td>{{ zR[1] }}</td>
+               <td>{{ zuR[1] }}</td>
+               <td><input v-model.number="aR[1]" type="number" @change="calc(1)" id="input_a"></td>
+               <td>{{ cyR[1].toFixed(4) }}</td>
+               <td>{{ muR[1].toFixed(4) }}</td>
+               <td>{{ ibCyR[1].toFixed(4) }}</td>
+               <td>{{ bR[1] }}</td>
+               <td>{{ bettaR[1] }}</td>
+               <td>{{ phiR[1] }}</td>
+               <td>{{ WR[1] }}</td>
+               <td>{{ ReR[1] }} ≈</td>
+                <td>
+                   <select v-model.number="polaraR[1]" @change="calcPol(1)">
+                    <option>100000</option>
+                    <option>200000</option>
+                   </select>
+                </td>
+            </tr>
+            <tr>
+               <td style="color: green;">{{ r_R[2] }}</td>
+               <td>{{ or[2] }}</td>
+               <td>{{ zR[2] }}</td>
+               <td>{{ zuR[2] }}</td>
+               <td><input v-model.number="aR[2]" type="number" @change="calc(2)" id="input_a"></td>
+               <td>{{ cyR[2].toFixed(4) }}</td>
+               <td>{{ muR[2].toFixed(4) }}</td>
+               <td>{{ ibCyR[2].toFixed(4) }}</td>
+               <td>{{ bR[2] }}</td>
+               <td>{{ bettaR[2] }}</td>
+               <td>{{ phiR[2] }}</td>
+               <td>{{ WR[2] }}</td>
+               <td>{{ ReR[2] }} ≈</td>
+               <td>
+                   <select v-model.number="polaraR[2]" @change="calcPol(2)">
+                    <option>100000</option>
+                    <option>200000</option>
+                   </select>
+                </td>
+            </tr>
+            <tr>
+               <td style="color: SaddleBrown;">{{ r_R[3] }}</td>
+               <td>{{ or[3] }}</td>
+               <td>{{ zR[3] }}</td>
+               <td>{{ zuR[3] }}</td>
+               <td><input v-model.number="aR[3]" type="number" @change="calc(3)" id="input_a"></td>
+               <td>{{ cyR[3].toFixed(4) }}</td>
+               <td>{{ muR[3].toFixed(4) }}</td>
+               <td>{{ ibCyR[3].toFixed(4) }}</td>
+               <td>{{ bR[3] }}</td>
+               <td>{{ bettaR[3] }}</td>
+               <td>{{ phiR[3] }}</td>
+               <td>{{ WR[3] }}</td>
+               <td>{{ ReR[3] }} ≈</td>
+               <td>
+                   <select v-model.number="polaraR[3]" @change="calcPol(3)">
+                    <option>100000</option>
+                    <option>200000</option>
+                   </select>
+                </td>
+            </tr>
+            <tr>
+               <td style="color: blue;">{{ r_R[4] }}</td>
+               <td>{{ or[4] }}</td>
+               <td>{{ zR[4] }}</td>
+               <td>{{ zuR[4] }}</td>
+               <td><input v-model.number="aR[4]" type="number" @change="calc(4)" id="input_a"></td>
+               <td>{{ cyR[4].toFixed(4) }}</td>
+               <td>{{ muR[4].toFixed(4) }}</td>
+               <td>{{ ibCyR[4].toFixed(4) }}</td>
+               <td>{{ bR[4] }}</td>
+               <td>{{ bettaR[4] }}</td>
+               <td>{{ phiR[4] }}</td>
+               <td>{{ WR[4] }}</td>
+               <td>{{ ReR[4] }} ≈</td>
+               <td>
+                   <select v-model.number="polaraR[4]" @change="calcPol(4)">
+                    <option>100000</option>
+                    <option>200000</option>
+                   </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <a href="https://t.me/home_wind_wheel" target="_blank">
+        <div class="footer-telega"></div>
+    </a>
+</div>
+</body>
+<script src="vuescript.js"></script>
+
+
