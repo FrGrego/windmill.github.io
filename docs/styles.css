@@ -1,6 +1,6 @@
 body {
     background-color: teal;
-    background-image: url("assets/img/clouds.jpg");
+    background-image: url("../img/clouds.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     color: #3a4144;
@@ -32,7 +32,7 @@ body {
     width: 32px;
     height: 32px;
     margin: 8 20;
-    background-image: url("assets/img/telegram.png");
+    background-image: url("../img/telegram.png");
     background-repeat: no-repeat;
     background-size: cover;
     cursor: pointer;
@@ -50,7 +50,7 @@ body {
     width: 32px;
     height: 32px;
     margin: 8 0 8 13;
-    background-image: url("assets/img/icon-windmill.png");
+    background-image: url("../img/icon-windmill.png");
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -96,7 +96,7 @@ body {
     height: 235;
     width: 340;
     margin: 10 10 10 0;
-    background-image: url("assets/img/wing.jpg");
+    background-image: url("../img/wing.jpg");
     background-repeat: no-repeat;
     background-size: cover;
 }
