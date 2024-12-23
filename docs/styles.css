@@ -1,6 +1,6 @@
 body {
     background-color: teal; 
-    background-image: url("../docs/img/clouds.jpg");
+    background-image: url("docs/img/clouds.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     color: #3a4144;
@@ -32,7 +32,7 @@ body {
     width: 32px;
     height: 32px;
     margin: 8 20;
-    background-image: url("./docs/img/telegram.png");
+    background-image: url("docs/img/telegram.png");
     background-repeat: no-repeat;
     background-size: cover;
     cursor: pointer;
@@ -50,7 +50,7 @@ body {
     width: 32px;
     height: 32px;
     margin: 8 0 8 13;
-    background-image: url("/docs/img/icon-windmill.png");
+    background-image: url("docs/img/icon-windmill.png");
     background-repeat: no-repeat;
     background-size: cover;
 }
